@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <!-- Tree View para Ciclos de ETO -->
+    <!-- <record id="view_afr_supervisorio_ciclos_tree_eto" model="ir.ui.view">
+        <field name="name">supervisorio.ciclos.tree.eto</field>
+        <field name="model">afr.supervisorio.ciclos</field>
+        <field name="inherit_id" ref="afr_supervisorio_ciclos.view_afr_supervisorio_ciclos_tree"/>
+        <field name="arch" type="xml">
+           
+           
+        </field>
+    </record> -->
+
+    <!-- Form View para Ciclos de ETO -->
+    <record id="view_afr_supervisorio_ciclos_form_eto" model="ir.ui.view">
+        <field name="name">supervisorio.ciclos.form.eto</field>
+        <field name="model">afr.supervisorio.ciclos</field>
+        <field name="inherit_id" ref="afr_supervisorio_ciclos.view_afr_supervisorio_ciclos_form"/>
+        <field name="arch" type="xml">
+      <div></div>
+           
+        </field>
+    </record>
+</odoo> 
