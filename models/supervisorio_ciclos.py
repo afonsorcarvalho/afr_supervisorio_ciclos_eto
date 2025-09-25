@@ -141,7 +141,7 @@ class SupervisorioCiclosEto(models.Model):
         ciclo_selecionado = header['Ciclo Selecionado:']
         cycle_type = self.cycle_type_id or self.equipment_id.cycle_type_id
         cycle_features_id = cycle_type.cycle_features_id.filtered(lambda x: x.name == ciclo_selecionado)
-
+        _logger.debug(f"achado o cycle_features_id: {cycle_features_id.name}")
       
       
         hora_str = header['Hora:']

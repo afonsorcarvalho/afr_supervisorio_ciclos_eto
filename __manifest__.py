@@ -10,7 +10,7 @@
     'author': 'Engenapp',
     'website': 'https://www.engenapp.com.br',
     'depends': [
-        'base','afr_supervisorio_ciclos',
+        'afr_supervisorio_ciclos',
     ],
     'data': [
         'security/ir.model.access.csv',

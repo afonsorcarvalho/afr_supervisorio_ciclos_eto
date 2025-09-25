@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    
     <!-- Action para Ciclos de ETO -->
-    <record id="action_afr_supervisorio_ciclos_eto" model="ir.actions.act_window">
-        <field name="name">Ciclos</field>
+    <!-- <record id="action_afr_supervisorio_ciclos_eto" model="ir.actions.act_window">
+        <field name="name">Todos osCiclos</field>
         <field name="res_model">afr.supervisorio.ciclos</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_cycle_type_eto': 1}</field>
-        
+         <field name="search_view_id" ref="afr_supervisorio_ciclos.view_afr_supervisorio_ciclos_search"/>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('afr_supervisorio_ciclos.view_afr_supervisorio_ciclos_tree')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('view_afr_supervisorio_ciclos_form_eto')})]"/> 
@@ -16,13 +16,13 @@
                 Nenhum ciclo encontrado eles serão registrados automaticamente pelo sistema.
             </p>
         </field>
-    </record>
+    </record> -->
 
    
     <!-- Menu Principal de Ciclos -->
-    <menuitem id="menu_afr_supervisorio_ciclos_eto"
+    <!-- <menuitem id="menu_afr_supervisorio_ciclos_eto"
               name="Ciclos"
               parent="afr_supervisorio_ciclos.menu_afr_supervisorio_ciclos_operations"
               action="action_afr_supervisorio_ciclos_eto"
-              sequence="20"/>
+              sequence="20"/> -->
 </odoo> 
