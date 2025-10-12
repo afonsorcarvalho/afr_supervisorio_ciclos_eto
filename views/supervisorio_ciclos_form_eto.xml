@@ -17,8 +17,26 @@
         <field name="model">afr.supervisorio.ciclos</field>
         <field name="inherit_id" ref="afr_supervisorio_ciclos.view_afr_supervisorio_ciclos_form"/>
         <field name="arch" type="xml">
-      <div></div>
-           
+            <!-- Adiciona campos invisíveis para condição -->
+            <xpath expr="//field[@name='equipment_id']" position="after">
+                <field name="equipment_category_id" invisible="1"/>
+                <field name="is_eto_equipment" invisible="1"/>
+            </xpath>
+            
+            <!-- Adiciona grupos para Parâmetros ETO antes do notebook -->
+            <xpath expr="//notebook" position="before">
+                <group string="Parâmetros ETO" 
+                       attrs="{'invisible': [('is_eto_equipment', '=', False)]}">
+                    <group string="Gás ETO">
+                        <field name="massa_gas_eto"/>
+                        <field name="concentracao_eto_porcentagem"/>
+                    </group>
+                    <group string="Cálculos">
+                        <field name="massa_eto" readonly="1"/>
+                        <field name="concentracao_eto_camara" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo> 

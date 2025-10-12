@@ -15,7 +15,9 @@
     'data': [
         'security/ir.model.access.csv',
         'views/supervisorio_ciclos_form_eto.xml',
+        
         'views/menu_views.xml',
+        'reports/supervisorio_ciclo_reports_template.xml',
     ],
     'installable': True,
     'application': False,

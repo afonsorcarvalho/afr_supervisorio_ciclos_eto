@@ -6,11 +6,85 @@ _logger = logging.getLogger(__name__)
 import pytz
 class SupervisorioCiclosEto(models.Model):
     _inherit = 'afr.supervisorio.ciclos'
-    
 
+    # Campo computado para verificar se é equipamento ETO
+    is_eto_equipment = fields.Boolean(
+        string='É Equipamento ETO',
+        compute='_compute_is_eto_equipment',
+        store=True,
+        help='Indica se o equipamento é da categoria ETO'
+    )
     
+    @api.depends('equipment_category_id', 'equipment_category_id.name')
+    def _compute_is_eto_equipment(self):
+        """
+        Verifica se o equipamento é da categoria ETO.
+        """
+        for record in self:
+            if record.equipment_category_id and record.equipment_category_id.name:
+                record.is_eto_equipment = 'ETO' in record.equipment_category_id.name.upper()
+            else:
+                record.is_eto_equipment = False
 
- 
+    # Campos específicos para ETO
+    # Massa de gás ETO admitida (em Kg)
+    massa_gas_eto = fields.Float(
+        string='Massa de Gás ETO (Kg)',
+        tracking=True,
+        help='Quantidade de gás ETO admitida em Kg'
+    )
+    
+    # Concentração de ETO em porcentagem (padrão 90%)
+    concentracao_eto_porcentagem = fields.Float(
+        string='Porcentagem ETO (%)',
+        default=90.0,
+        tracking=True,
+        help='Porcentagem de ETO no gás (padrão 90%)'
+    )
+    
+    # Massa de ETO calculada (massa_gas_eto * concentracao_eto_porcentagem / 100)
+    massa_eto = fields.Float(
+        string='Massa de ETO (Kg)',
+        compute='_compute_massa_eto',
+        store=True,
+        
+        tracking=True,
+        help='Massa de ETO calculada automaticamente'
+    )
+    
+    # Concentração de ETO na câmara (g/L)
+    concentracao_eto_camara = fields.Float(
+        string='Concentração na Câmara (mg/L)',
+        compute='_compute_concentracao_eto_camara',
+        store=True,
+        tracking=True,
+        help='Concentração de ETO na câmara, calculada automaticamente'
+    )
+    
+    @api.depends('massa_gas_eto', 'concentracao_eto_porcentagem')
+    def _compute_massa_eto(self):
+        """
+        Calcula a massa de ETO: massa_gas_eto * concentracao_eto_porcentagem / 100
+        """
+        for record in self:
+            if record.massa_gas_eto and record.concentracao_eto_porcentagem:
+                record.massa_eto = (record.massa_gas_eto * record.concentracao_eto_porcentagem) / 100
+            else:
+                record.massa_eto = 0.0
+    
+    @api.depends('massa_eto', 'equipment_id')
+    def _compute_concentracao_eto_camara(self):
+        """
+        Calcula a concentração de ETO na câmara: massa_eto (Kg) / chamber_size (L) * 1000
+        Converte Kg para gramas multiplicando por 1000
+        """
+        for record in self:
+            if record.massa_eto and record.equipment_id and hasattr(record.equipment_id, 'chamber_size') and record.equipment_id.chamber_size:
+                # massa_eto em Kg, chamber_size em L, resultado em mg/L
+                record.concentracao_eto_camara = (record.massa_eto*1000000 ) / record.equipment_id.chamber_size
+            else:
+                record.concentracao_eto_camara = 0.0
+
     @api.model
     def process_cycle_data_eto_v1(self,header,body,values):
         """
@@ -172,8 +246,7 @@ class SupervisorioCiclosEto(models.Model):
         # procurando no body o valor de 'CICLO FINALIZADO'
         
         values['state'] = 'em_andamento'
-        if body['state'] == 'concluido':
-            
+        if body['state'] == 'concluido':           
             values['state'] = 'concluido'
         if body['state'] == 'abortado':
 
