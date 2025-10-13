@@ -25,15 +25,20 @@
             
             <!-- Adiciona grupos para Parâmetros ETO antes do notebook -->
             <xpath expr="//notebook" position="before">
-                <group string="Parâmetros ETO" 
+                <group col="3" string="Parâmetros ETO" 
                        attrs="{'invisible': [('is_eto_equipment', '=', False)]}">
-                    <group string="Gás ETO">
+                    <group >
+                        <field name="massa_gas_eto_setpoint" string="Setpoint (Kg)"/>
+                        <field name="concentracao_eto_camara" string="Concentração (mg/L)" readonly="1"/>
+                    </group>
+                    <group>
                         <field name="massa_gas_eto"/>
                         <field name="concentracao_eto_porcentagem"/>
                     </group>
-                    <group string="Cálculos">
+                    <group>
                         <field name="massa_eto" readonly="1"/>
-                        <field name="concentracao_eto_camara" readonly="1"/>
+                    </group>
+                    <group >
                     </group>
                 </group>
             </xpath>

@@ -28,8 +28,13 @@ class SupervisorioCiclosEto(models.Model):
 
     # Campos específicos para ETO
     # Massa de gás ETO admitida (em Kg)
+    massa_gas_eto_setpoint = fields.Float(
+        string='Massa de Gás Setpoint (Kg)',
+        tracking=True,
+        help='Massa de gás ETO programada em Kg'
+    )
     massa_gas_eto = fields.Float(
-        string='Massa de Gás ETO (Kg)',
+        string='Gás ETO Admitido (Kg)',
         tracking=True,
         help='Quantidade de gás ETO admitida em Kg'
     )
@@ -176,6 +181,26 @@ class SupervisorioCiclosEto(models.Model):
         
         return self.write(values)
 
+    def get_value_eto_admitido(self, body):
+        """
+        Obtém a moda dos valores do último elemento das linhas válidas do body['data'],
+        considerando apenas linhas com 5 elementos.
+        """
+        from statistics import mode, StatisticsError
+
+        valores_ultimo_elemento = [
+            row[-1] for row in body.get('data', [])
+            if isinstance(row, (list, tuple)) and len(row) == 5
+        ]
+        if not valores_ultimo_elemento:
+            return 0
+
+        try:
+            return mode(valores_ultimo_elemento)
+        except StatisticsError:
+            # Se não houver moda (multimodal ou único valor), retorna o primeiro valor disponível
+            return 0
+
     @api.model
     def process_cycle_data_eto_v2(self,header,body,values):
         """
@@ -224,13 +249,27 @@ class SupervisorioCiclosEto(models.Model):
         data_completa = self.data_hora_to_datetime(data_obj,hora_str)
        
 
-        
+            
         novos_valores = {
             'name': header['file_name'],
             'start_date': data_completa,  # Remove timezone antes de salvar
             'batch_number': header['Cod. ciclo:'],
             'cycle_features_id': cycle_features_id.id,
+        
         }
+        try:
+            massa_gas_eto = float(header['Massa ETO:'])
+            if massa_gas_eto != 0:
+                novos_valores['massa_gas_eto_setpoint'] = massa_gas_eto
+        except:
+            _logger.warning("Não foi possível converter a massa de gás ETO para float")
+        
+        value_eto_admitido = self.get_value_eto_admitido(body)    
+        if value_eto_admitido:
+            novos_valores['massa_gas_eto'] = value_eto_admitido
+        else:
+            _logger.warning("Não foi possível obter o valor de ETO admitido")
+      
         _logger.debug(f"Novos valores: {novos_valores}")
         values.update(novos_valores)
        
