@@ -4,6 +4,7 @@ from datetime import datetime, timedelta,time
 from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)   
 import pytz
+
 class SupervisorioCiclosEto(models.Model):
     _inherit = 'afr.supervisorio.ciclos'
 
@@ -65,6 +66,31 @@ class SupervisorioCiclosEto(models.Model):
         tracking=True,
         help='Concentração de ETO na câmara, calculada automaticamente'
     )
+
+    informacoes_complementares = fields.Text(
+        string='Informações complementares',
+        tracking=True,
+        help='Texto exibido no relatório PDF do ciclo, após o gráfico e antes da área de assinatura. '
+             'O valor padrão vem do tipo de ciclo e pode ser ajustado por ciclo.',
+    )
+
+    @api.onchange('cycle_type_id')
+    def _onchange_cycle_type_id_informacoes_complementares(self):
+        """Propaga o texto configurado no tipo de ciclo para o campo do ciclo."""
+        if self.cycle_type_id:
+            self.informacoes_complementares = self.cycle_type_id.informacoes_complementares
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Preenche informações complementares a partir do tipo de ciclo quando não informado."""
+        CycleType = self.env['afr.cycle.type']
+        for vals in vals_list:
+            cid = vals.get('cycle_type_id')
+            if cid and not vals.get('informacoes_complementares'):
+                ct = CycleType.browse(cid)
+                if ct.informacoes_complementares:
+                    vals['informacoes_complementares'] = ct.informacoes_complementares
+        return super().create(vals_list)
     
     @api.depends('massa_gas_eto', 'concentracao_eto_porcentagem')
     def _compute_massa_eto(self):

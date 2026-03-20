@@ -16,13 +16,23 @@
                         <strong>Massa Gás: </strong>
                     </div>
                     <div class="col-4">
-                        <span t-field="o.massa_gas_eto"/> Kg
+                        <t t-if="o.massa_gas_eto is not None">
+                            <t t-esc="'%.2f' % o.massa_gas_eto"/> Kg
+                        </t>
+                        <t t-if="o.massa_gas_eto is None">
+                            -
+                        </t>
                     </div>
                     <div class="col-2">
                         <strong>Concentração ETO: </strong>
                     </div>
                     <div class="col-4">
-                        <span t-field="o.concentracao_eto_porcentagem"/>%
+                        <t t-if="o.concentracao_eto_porcentagem is not None">
+                            <t t-esc="'%.1f' % o.concentracao_eto_porcentagem"/>%
+                        </t>
+                        <t t-if="o.concentracao_eto_porcentagem is None">
+                            -
+                        </t>
                     </div>
                 </div>
                 
@@ -31,17 +41,34 @@
                         <strong>Massa ETO: </strong>
                     </div>
                     <div class="col-4">
-                        <span t-field="o.massa_eto"/> Kg
+                        <t t-if="o.massa_eto is not None">
+                            <t t-esc="'%.2f' % o.massa_eto"/> Kg
+                        </t>
+                        <t t-if="o.massa_eto is None">
+                            -
+                        </t>
                     </div>
                     <div class="col-2">
                         <strong>Concentração na Câmara: </strong>
                     </div>
                     <div class="col-4">
-                        <span t-field="o.concentracao_eto_camara"/> mg/L
+                        <t t-if="o.concentracao_eto_camara is not None">
+                            <t t-esc="'%.1f' % o.concentracao_eto_camara"/> mg/L
+                        </t>
+                        <t t-if="o.concentracao_eto_camara is None">
+                            -
+                        </t>
                     </div>
                 </div>
                 
             </t>
+        </xpath>
+
+        <!-- Informações complementares: após o gráfico, antes da linha de assinatura -->
+        <xpath expr="//div[@class='row mt-5'][div[contains(., 'Garantia de qualidade')]]" position="before">
+            <div class="row mt-4 mb-2" t-if="o.informacoes_complementares">
+                <div class="col-12 text-justify small" style="white-space: pre-line;" t-field="o.informacoes_complementares"/>
+            </div>
         </xpath>
         
     </template>

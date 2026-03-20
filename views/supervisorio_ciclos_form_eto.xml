@@ -38,6 +38,10 @@
                     <group>
                         <field name="massa_eto" readonly="1"/>
                     </group>
+                    <!-- <group colspan="3" string="Relatório PDF">
+                        <field name="informacoes_complementares" nolabel="1" widget="text"
+                               placeholder="Texto antes da assinatura no relatório..."/>
+                    </group> -->
                     <group >
                     </group>
                 </group>
