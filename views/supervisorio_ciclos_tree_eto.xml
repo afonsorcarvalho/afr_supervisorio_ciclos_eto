@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Estende a listagem de ciclos (afr_supervisorio_ciclos) para exibir a massa de ETO
+        (campo massa_eto no modelo herdado) imediatamente antes da coluna de duração.
+    -->
+    <record id="view_afr_supervisorio_ciclos_tree_eto" model="ir.ui.view">
+        <field name="name">afr.supervisorio.ciclos.tree.eto</field>
+        <field name="model">afr.supervisorio.ciclos</field>
+        <field name="inherit_id" ref="afr_supervisorio_ciclos.view_afr_supervisorio_ciclos_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='duration']" position="before">
+                <field
+                    name="massa_gas_eto"
+                    string="Massa ETO (Kg)"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
